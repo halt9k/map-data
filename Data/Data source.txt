@@ -1,0 +1,14 @@
+Code:
+	Jump start:
+	https://melaniesoek0120.medium.com/data-visualization-how-to-plot-a-map-with-geopandas-in-python-73b10dcd4b4b
+
+CSV:
+
+	countries_latitude_longitude.csv:
+	https://raw.githubusercontent.com/melanieshi0120/COVID-19_global_time_series_panel_data/master/data/countries_latitude_longitude.csv
+
+	life-expectancy.csv:
+	Our World In Data, 2022
+
+	population-since-1800.csv:
+	Our World In Data, 2022
