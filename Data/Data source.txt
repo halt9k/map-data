@@ -9,3 +9,6 @@ CSV:
 
 	population-since-1800.csv:
 	Our World In Data, 2022
+	
+	nobel-prizes.csv:
+	https://worldpopulationreview.com/country-rankings/nobel-prizes-by-country
