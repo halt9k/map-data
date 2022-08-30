@@ -12,3 +12,6 @@ CSV:
 	
 	nobel-prizes.csv:
 	https://worldpopulationreview.com/country-rankings/nobel-prizes-by-country
+	
+	geoBoundaries-RUS-ADM1-all.zip:
+	https://data.humdata.org/dataset/geoboundaries-admin-boundaries-for-russian-federation?

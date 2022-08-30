@@ -9,7 +9,6 @@ import geopandas
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import matplotlib.patheffects as PathEffects
-# from adjustText import adjust_text
 
 import translations
 
@@ -56,15 +55,11 @@ def plot_ovelapping_captions(plt, df):
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]))
         texts += [add_caption(plt, txt, df.centers_xy[i], cen_pos, pos_min_y, spr_dist)]
-    #adjust_text(texts, 
-                # arrowprops=dict(arrowstyle='->', color='red', linewidth=0.5, alpha=0.5), 
-                # force_points=(1.0, 0.1),
-                # force_text=(0.05, 0.01),
-                # expand_points=(1.0, 1.0),
-                # avoid_points=False,
-                # expand_text=(0.98, 0.98))
-                # expand_text=(1.01, 1.01))
 
+
+def get_geopandas_ru_map_data():
+    ru_shape = geopandas.GeoDataFrame.from_file("Data\\geoBoundaries-RUS-ADM1_simplified.shp")
+    return ru_shape
 
 def get_geopandas_fixed_world_map_data():
     # 'naturalearth_lowres' is internal geopandas dataset
@@ -85,7 +80,7 @@ def remove_geopandas_marigins(fig):
     fig.subplots_adjust(top=0.9, bottom=0, left=0, right=1, hspace=0, wspace=0)
 
 
-def plot_map(df, col_min, col_max, show_info, caption_text, wait, figN):    
+def plot_map(df, col_min, col_max, show_info, caption_text, wait):
     df_world = get_geopandas_fixed_world_map_data()
 
     # merge geopandas data with provided data
@@ -115,3 +110,6 @@ def plot_map(df, col_min, col_max, show_info, caption_text, wait, figN):
     if wait:
         plt.show()
 
+# TODO 1 merge with world 
+def plot_ru_map(df, col_min, col_max, show_info, caption_text, wait):
+    shape = get_geopandas_ru_map_data()
