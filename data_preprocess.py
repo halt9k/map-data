@@ -4,18 +4,11 @@ import numpy as np
 import geopandas
 
 
-def get_population_change_ru_2000_to_2020():
-    df = pd.read_csv("Data\\*.csv",dtype={'Code': np.str})
+def get_population_change_ru_2002_to_2022():
+    df = pd.read_csv("Data\\Ru\\ru_2002_2022.csv")
     # print(df)
-    df.rename(columns = {'Population (historical estimates)':'Population'}, inplace = True)
 
-    df = df[df.Year.isin([2000, 2020])]
-    df = filter_code(df)
-
-    df = pd.pivot_table(df, values='Population', index=['Entity', 'Code'], columns='Year')
-    df.reset_index(inplace=True)
-    df.rename(columns = {2000:'_2000',2020:'_2020'}, inplace = True)
-    df['Growth'] = df._2020.div(df._2000).mul(100)
+    df['Growth'] = df.p_2022.div(df.p_2002).mul(100)
 
     return df
 

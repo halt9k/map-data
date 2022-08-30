@@ -58,10 +58,10 @@ def plot_ovelapping_captions(plt, df):
 
 
 def get_geopandas_ru_map_data():
-    ru_shape = geopandas.GeoDataFrame.from_file("Data\\geoBoundaries-RUS-ADM1_simplified.shp")
+    ru_shape = geopandas.GeoDataFrame.from_file("Data\\Ru\\Simplified\\geoBoundaries-RUS-ADM1_simplified.shp")
     return ru_shape
 
-def get_geopandas_fixed_world_map_data():
+def get_geopandas_world_map():
     # 'naturalearth_lowres' is internal geopandas dataset
     world = geopandas.GeoDataFrame.from_file(geopandas.datasets.get_path('naturalearth_lowres'))
 
@@ -77,39 +77,43 @@ def get_geopandas_fixed_world_map_data():
 
 def remove_geopandas_marigins(fig):
     fig.tight_layout(pad=0)
-    fig.subplots_adjust(top=0.9, bottom=0, left=0, right=1, hspace=0, wspace=0)
+    fig.subplots_adjust(top=0.98, bottom=0, left=0, right=1, hspace=0, wspace=0)
 
 
-def plot_map(df, col_min, col_max, show_info, caption_text, wait):
-    df_world = get_geopandas_fixed_world_map_data()
+def plot_map(df, df_ru_pc, col_min, col_max, show_info, caption_text, wait):
+    df_world_shapes = get_geopandas_world_map()
+    df_ru_areas = get_geopandas_ru_map_data()
 
     # merge geopandas data with provided data
     df.rename(columns = {'Code':'iso_a3'}, inplace = True)
-    df_merge = pd.merge(df_world, df, on='iso_a3')
+    df_merge = pd.merge(df_world_shapes, df, on='iso_a3')
 
     # plot world map
     col_norm = mpl.colors.Normalize(vmin=col_min, vmax=col_max)
-    skipped_areas_desc = {"color": "lightgrey", "edgecolor": "black", "label": "",}
+    skipped_areas_desc = {"color": "lightgrey", "edgecolor": "black", "label": ""}
 
     plt.rcParams.update({'font.size': 8})
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots() #figsize=(20, 16))
     remove_geopandas_marigins(fig)
+
     df_merge.plot(column='Growth', ax=ax,
                        norm=col_norm, cmap='plasma',
-                       figsize=(4, 3),
                        legend=True, legend_kwds={'shrink': 0.3, 'orientation': "horizontal", 'format':"%d%%"},
                        # legend=True, legend_kwds={'shrink': 0.2},
                        missing_kwds=skipped_areas_desc)
     
+    df_ru_areas.plot(column=None, ax=ax,
+                       norm=col_norm, cmap='plasma',                       
+                       legend=False,
+                       missing_kwds=skipped_areas_desc)
+    # became broken after 3nd .plot call
+    ax.set_aspect('equal')    
+    
     # add countries names and numbers
-    plt.title(caption_text, fontsize=8)
+    plt.title(caption_text, fontsize=8, y=-0.15)
     if show_info:
         plot_ovelapping_captions(plt, df_merge)
 
     plt.plot()
     if wait:
         plt.show()
-
-# TODO 1 merge with world 
-def plot_ru_map(df, col_min, col_max, show_info, caption_text, wait):
-    shape = get_geopandas_ru_map_data()
