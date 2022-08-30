@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import geopandas
 
-# Without combined world regions (Whole world, Africa, etc)
+# Remove combined world regions (Whole world, Africa, etc)
 def filter_code(df):
     df_filtered = df[~df.Code.isnull() & (df.Code != 'OWID_WRL')]
     return df_filtered
@@ -33,7 +33,7 @@ def get_life_expectancy(at_year):
 
     return df
 
-# country column to code column
+# Country names from codes
 def alpha3code(column):
     Codes = []
     for country_name in column:
@@ -56,7 +56,7 @@ def alpha3code(column):
 
     return Codes
 
-def get_nobel_winners_2022():
+def get_nobel_winners_amount_2022():
     df = pd.read_csv("Data\\nobel-prizes.csv")
     df['Code'] = alpha3code(df.country)
     df.rename(columns = {'count':'Nobels'}, inplace = True)
