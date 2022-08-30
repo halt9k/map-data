@@ -26,7 +26,7 @@ le_year = 2019
 th_expect_developed = 65.0
 th_expect_modern = 76.0
 
-df_ru_pc = get_population_change_ru_2000_to_2020()
+df_ru_pc = get_population_change_ru_2002_to_2022()
 
 df_pc = get_population_change_2000_to_2020()
 df_le = get_life_expectancy(le_year)
@@ -58,6 +58,4 @@ e1, e2 = th_expect_developed, th_expect_modern
 
 # = 90% ...  140%
 # plot_map(df, col_min=80, col_max=150, show_info = False, caption_text=df_desc, wait=False)
-# plot_map(df_sample, col_min=90, col_max=125, show_info = True, caption_text=df_sample_desc, wait=True)
-
-plot_ru_map(df_ru_pc, col_min=90, col_max=125, caption_text="RU", wait=True)
+plot_map(df_sample, df_ru_pc, col_min=90, col_max=125, show_info = True, caption_text=df_sample_desc, wait=True)

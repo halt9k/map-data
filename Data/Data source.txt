@@ -25,3 +25,5 @@ RU:
 		http://www.perepis2002.ru/index.html?id=13
 		2022:
 		https://rosstat.gov.ru/vpn_popul
+		
+		Some regions were combined during 2002->2022, hiding total change
