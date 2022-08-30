@@ -56,7 +56,12 @@ def plot_ovelapping_captions(plt, df):
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]))
         texts += [add_caption(plt, txt, df.centers_xy[i], cen_pos, pos_min_y, spr_dist)]
-    adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'), force_points=(0.2, 0.2))
+    adjust_text(texts, 
+                arrowprops=dict(arrowstyle='->', color='red', linewidth=0.5, alpha=0.5), 
+                force_points=(0.4, 0.1),
+                force_text=(0.2, 0.01),
+                expand_points=(1.01, 1.01),
+                expand_text=(0.97, 0.97))
 
 
 def get_geopandas_fixed_world_map_data():
@@ -94,7 +99,7 @@ def plot_map(df, col_min, col_max, show_info, caption_text, wait, figN):
     remove_geopandas_marigins(fig)
     df_merge.plot(column='Growth', ax=ax,
                        norm=col_norm, cmap='plasma',
-                       figsize=(40, 30),
+                       figsize=(4, 3),
                        legend=True, legend_kwds={'shrink': 0.3, 'orientation': "horizontal", 'format':"%d%%"},
                        # legend=True, legend_kwds={'shrink': 0.2},
                        missing_kwds=skipped_areas_desc)
