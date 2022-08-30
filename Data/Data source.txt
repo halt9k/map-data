@@ -2,16 +2,26 @@ Code:
 	Jump start:
 	https://melaniesoek0120.medium.com/data-visualization-how-to-plot-a-map-with-geopandas-in-python-73b10dcd4b4b
 
-CSV:
+World:
+	CSV:
+		life-expectancy.csv:
+		Our World In Data, 2022
 
-	life-expectancy.csv:
-	Our World In Data, 2022
-
-	population-since-1800.csv:
-	Our World In Data, 2022
+		population-since-1800.csv:
+		Our World In Data, 2022
+		
+		nobel-prizes.csv:
+		https://worldpopulationreview.com/country-rankings/nobel-prizes-by-country
 	
-	nobel-prizes.csv:
-	https://worldpopulationreview.com/country-rankings/nobel-prizes-by-country
+RU:	
+	CSV:
+		geoBoundaries-RUS-ADM1-all.zip:
+		https://data.humdata.org/dataset/geoboundaries-admin-boundaries-for-russian-federation?
 	
-	geoBoundaries-RUS-ADM1-all.zip:
-	https://data.humdata.org/dataset/geoboundaries-admin-boundaries-for-russian-federation?
+	Population csv:
+		Converted somwhere from, 
+			verified by wikipedia tables for each region
+		2002:
+		http://www.perepis2002.ru/index.html?id=13
+		2022:
+		https://rosstat.gov.ru/vpn_popul
