@@ -9,26 +9,30 @@ import geopandas
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import matplotlib.patheffects as PathEffects
+from adjustText import adjust_text
 
 import translations
 
 def add_caption(plt, txt, place, spr_center, pos_min_y, spr_dist):
     cur_dist = place.distance(spr_center)
     pos = place
-    ratio = cur_dist / spr_dist
-    if ratio < 1.0:
+
+    # non-perfect manual adjust 
+    # ratio = cur_dist / spr_dist
+    # if ratio < 1.0:
         # mul = 1 - ratio**0.2
-        mul = 2 / (ratio + 0.1) # + ratio ** 0.2 / 4.0
-        dx, dy = -spr_center.x + place.x, -spr_center.y + place.y
-        max_mul = (pos_min_y - spr_center.y) / dy
-        mul = np.fmin(abs(max_mul), mul)
-        pt_throw = affinity.translate(spr_center, dx * mul, dy * 2 * mul, 0)
-        x,y,dx,dy = pt_throw.x, pt_throw.y, -pt_throw.x + place.x, -pt_throw.y + place.y
-        plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5)
-        pos = pt_throw
+        # mul = 2 / (ratio + 0.1) # + ratio ** 0.2 / 4.0
+        # dx, dy = -spr_center.x + place.x, -spr_center.y + place.y
+        # max_mul = (pos_min_y - spr_center.y) / dy
+        # mul = np.fmin(abs(max_mul), mul)
+        # pt_throw = affinity.translate(spr_center, dx * mul, dy * 2 * mul, 0)
+        # x,y,dx,dy = pt_throw.x, pt_throw.y, -pt_throw.x + place.x, -pt_throw.y + place.y
+        # plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5)
+        # pos = pt_throw
             
     plt_txt = plt.text(pos.x, pos.y, txt, size=7, color='black')
     plt_txt.set_bbox(dict(facecolor='white', alpha=0.8, linewidth=0.5, pad = 1))
+    return plt_txt
 
 
 # with magnifying over EU
@@ -44,13 +48,15 @@ def plot_ovelapping_captions(plt, df):
     spa_pos = df[df.iso_a3 == 'ISR'].centers_xy.values[0]
     spr_dist = cen_pos.distance(spa_pos) + 1
 
+    texts = []
     for i in range(0, df.shape[0]):
         if np.isnan(df.Growth[i]):
             continue
         txt = "{}\n{}%\n{}y".format(df.iso_a3[i],
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]))
-        add_caption(plt, txt, df.centers_xy[i], cen_pos, pos_min_y, spr_dist)
+        texts += [add_caption(plt, txt, df.centers_xy[i], cen_pos, pos_min_y, spr_dist)]
+    adjust_text(texts, arrowprops=dict(arrowstyle='->', color='red'), force_points=(0.2, 0.2))
 
 
 def get_geopandas_fixed_world_map_data():
