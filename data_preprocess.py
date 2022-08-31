@@ -2,14 +2,35 @@ import pycountry
 import pandas as pd
 import numpy as np
 import geopandas
+import difflib
+from data_preprocess_name_matching import get_match
 
+def clean(cl):
+    # NOT 'Oblast':'' due to moscow vs moscow oblast
+    return cl.replace({'region':'r', 
+                       'area':'a', 
+                       'Oblast':'o',
+                       'Republic':'r', 
+                       'of':'', 
+                       '  ':' ', 
+                       'Krai':'k', 
+                       'territory':'t'}, 
+                      regex=True).str.strip()
 
 def get_population_change_ru_2002_to_2022():
     df = pd.read_csv("Data\\Ru\\ru_2002_2022.csv")
     # print(df)
 
-    df['Growth'] = df.p_2022.div(df.p_2002).mul(100)
+    # original region names messed, rename goals from this file
+    correct_names = pd.read_csv("Data\\Ru\\ru_2022_correct_names.csv")
 
+    df.Region = clean(df.Region)
+    correct_names['cleaned_iso_names'] = clean(correct_names.iso_name)
+    df['iso_name'] = df.Region.apply(lambda x: get_match(x, correct_names.cleaned_iso_names, correct_names.iso_name))
+
+    print('Replaced: \n' + str(df.Region + ' -> ' + df.iso_name))
+
+    df['Growth'] = df.p_2022.div(df.p_2002).mul(100)
     return df
 
 
