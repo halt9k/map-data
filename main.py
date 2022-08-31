@@ -31,11 +31,13 @@ df_ru_pc = get_population_change_ru_2002_to_2022()
 df_pc = get_population_change_2000_to_2020()
 df_le = get_life_expectancy(le_year)
 df_nb = get_nobel_winners_amount_2022()
+df_l = get_l_religions()
 
 # adding info to population table
 df_desc = desc_growth + ", " + translations.ALL_COUNTRIES
 df = pd.merge(df_pc, df_le, on='Code', how='left', validate='1:1')
 df = pd.merge(df, df_nb, on='Code', how='left', validate='1:1')
+df = pd.merge(df, df_l, on='Code', how='left', validate='1:1')
 
 df_sample = df.copy()
 df_sample.Growth[df_sample._2020 <= th_total_ppl_M * 10**6] = np.nan
