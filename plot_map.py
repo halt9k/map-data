@@ -12,10 +12,16 @@ import matplotlib.patheffects as PathEffects
 
 import translations
 
+def has_overlaps(pt_moved, spaced_pts, crit_overlap):
+    for pt_taken in spaced_pts:
+        cur_overlap = pt_moved.distance(pt_taken)
+        if cur_overlap < crit_overlap:
+            return pt_taken
+    return None
 
 # must operate under geo coodrinates, not plane xy
 def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
-    spaced_pts = []
+    taken_pts = []
     for pt_src in src_points:
         cur_dist = pt_src.distance(spr_repulse_center)        
 
@@ -32,25 +38,35 @@ def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
             pt_moved = pt_src
 
         # preventing overlaps
-        for pt_taken in spaced_pts:
-            crit_overlap = spr_dist * 0.1
-            cur_overlap = pt_moved.distance(pt_taken)
-            if cur_overlap < crit_overlap:
-                cur_overlap_x = pt_moved.x - pt_taken.x
-                pt_moved = affinity.translate(pt_moved, cur_overlap_x, 0, 0)
+        crit_overlap = spr_dist * 0.1
+        for _ in range(5):
+            pt_near = has_overlaps(pt_moved, taken_pts, crit_overlap)
+            if pt_near:
+                cur_overlap = pt_moved.distance(pt_near) * 10
+                pt_moved = affinity.translate(pt_moved, cur_overlap, 0, 0)
+                print ('Ovelap, moved offset: ' + str(cur_overlap))
+            else:
+                break
 
-        spaced_pts += [pt_moved]
-    return spaced_pts
+        taken_pts += [pt_moved]
+    return taken_pts
 
 
-def add_arrow(plt, rendered_label, pt_tgt, pt_caption):
+def add_arrow(rendered_label, pt_tgt, pt_caption):
     x,y,dx,dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y
 
-    bbox = rendered_label.get_window_extent()
-    plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5, clip_on=True, clip_box=bbox)    
+    # overlaps label itself
+    x += dx*0.1
+    y += dy*0.1
+    dx*=0.9
+    dy*=0.9
 
 
-def add_caption(plt, txt, pt_tgt, pt_caption):
+    #bbox = rendered_label.get_window_extent()
+    plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5)
+
+
+def add_caption(txt, pt_tgt, pt_caption):
     x,y,dx,dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y    
             
     lbl = plt.text(pt_caption.x, pt_caption.y, txt, size=7, color='black', ha='center', va='center')
@@ -65,7 +81,7 @@ def format_l(year):
         return 'L' + str(int(year))
 
 # without magnifying tricks captions will overlap badly over EU
-def plot_captions(plt, df):
+def plot_captions(fig, df):
     df['centers_xy'] = df.centroid
 
     # point for magnifying is selected between l1 and l2
@@ -91,15 +107,15 @@ def plot_captions(plt, df):
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]),
                                 format_l(df.legalizeYear[i]))
-        lbl = add_caption(plt, txt, df.centers_xy[i], df.captions_xy[i])
+        lbl = add_caption(txt, df.centers_xy[i], df.captions_xy[i])
         arrow_preps += [[i, lbl]]
 
     # to clip arrows under transparent bboxes, nessesary to draw and save bboxes first
-    plt.draw()
+    fig.canvas.draw()
     for prep in arrow_preps:
         i = prep[0]
         lbl = prep[1]
-        add_arrow(plt, lbl, df.centers_xy[i], df.captions_xy[i])
+        add_arrow(lbl, df.centers_xy[i], df.captions_xy[i])    
 
 
 def clean_unicode_text(cl):
@@ -169,7 +185,7 @@ def plot_map(df_world_info, df_ru_info, col_min, col_max, show_info, caption_tex
     # add countries names and numbers
     plt.title(caption_text, fontsize=8, y=-0.2)
     if show_info:
-        plot_captions(plt, df_world_merged)
+        plot_captions(fig, df_world_merged)
 
     plt.plot()
     if wait:
