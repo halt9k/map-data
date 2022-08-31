@@ -14,32 +14,48 @@ import translations
 
 
 # must operate under geo coodrinates, not plane xy
-def space_captions(src_pos, spr_center, pos_min_y, spr_dist):
-    spaced_pos = []
-    for place in src_pos:
-        cur_dist = place.distance(spr_center)
-        pos = place
+def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
+    spaced_pts = []
+    for pt_src in src_points:
+        cur_dist = pt_src.distance(spr_repulse_center)        
 
-        # non-final manual adjust 
+        # lens styled positions adjust
         ratio = cur_dist / spr_dist
         if 0.1 < ratio < 1.0:
             # mul = 1 - ratio**0.2
-            mul = 2 / (ratio + 0.1) # + ratio ** 0.2 / 4.0
-            dx, dy = -spr_center.x + place.x, -spr_center.y + place.y
-            max_mul = (pos_min_y - spr_center.y) / dy
+            mul = 1.5 / (ratio + 0.1) # + ratio ** 0.2 / 4.0
+            dx, dy = -spr_repulse_center.x + pt_src.x, -spr_repulse_center.y + pt_src.y
+            max_mul = (pos_limit_y - spr_repulse_center.y) / dy
             mul_y = np.fmin(abs(max_mul), mul)
-            pos = affinity.translate(spr_center, dx * mul, dy * mul_y, 0)
-        spaced_pos += [pos]
-    return spaced_pos
+            pt_moved = affinity.translate(pt_src, dx * mul, dy * mul_y, 0)
+        else:
+            pt_moved = pt_src
+
+        # preventing overlaps
+        for pt_taken in spaced_pts:
+            crit_overlap = spr_dist * 0.1
+            cur_overlap = pt_moved.distance(pt_taken)
+            if cur_overlap < crit_overlap:
+                cur_overlap_x = pt_moved.x - pt_taken.x
+                pt_moved = affinity.translate(pt_moved, cur_overlap_x, 0, 0)
+
+        spaced_pts += [pt_moved]
+    return spaced_pts
 
 
-def add_caption(plt, txt, place, caption_place):
-    x,y,dx,dy = place.x, place.y, -caption_place.x + place.x, -caption_place.y + place.y
-    plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5)
+def add_arrow(plt, rendered_label, pt_tgt, pt_caption):
+    x,y,dx,dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y
+
+    bbox = rendered_label.get_window_extent()
+    plt.arrow(x,y,dx,dy, head_width=0.5, head_length=1, linewidth=0.5, clip_on=True, clip_box=bbox)    
+
+
+def add_caption(plt, txt, pt_tgt, pt_caption):
+    x,y,dx,dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y    
             
-    plt_txt = plt.text(caption_place.x, caption_place.y, txt, size=7, color='black')
-    plt_txt.set_bbox(dict(facecolor='white', alpha=0.8, linewidth=0.5, pad = 1))
-    return plt_txt
+    lbl = plt.text(pt_caption.x, pt_caption.y, txt, size=7, color='black', ha='center', va='center')
+    lbl.set_bbox(dict(facecolor='white', alpha=0.8, linewidth=0.5, pad = 1))
+    return lbl
 
 
 def format_l(year):
@@ -48,22 +64,26 @@ def format_l(year):
     else:
         return 'L' + str(int(year))
 
-# with magnifying over EU
-def plot_ovelapping_captions(plt, df):
+# without magnifying tricks captions will overlap badly over EU
+def plot_captions(plt, df):
     df['centers_xy'] = df.centroid
 
+    # point for magnifying is selected between l1 and l2
     # matplotlib.pyplot.arrow(x, y, dx, dy, **kwargs)
-    ger_pos = df[df.iso_a3 == 'POL'].centers_xy.values[0]
-    fra_pos = df[df.iso_a3 == 'DEU'].centers_xy.values[0]
-    pos_min_y = df[df.iso_a3 == 'NOR'].centers_xy.values[0].y
+    l1_pos = df[df.iso_a3 == 'POL'].centers_xy.values[0]
+    l2_pos = df[df.iso_a3 == 'DEU'].centers_xy.values[0]    
 
-    cen_pos = LineString([ger_pos, fra_pos]).interpolate(0.8, normalized=True)
+    spr_force_source = LineString([l1_pos, l2_pos]).interpolate(0.8, normalized=True)
     spa_pos = df[df.iso_a3 == 'ISR'].centers_xy.values[0]
-    spr_dist = cen_pos.distance(spa_pos) + 1
+    spr_dist = spr_force_source.distance(spa_pos) + 1
 
-    df['captions_xy'] = space_captions(df.centers_xy, cen_pos, pos_min_y, spr_dist)
+    # used to limit labels from being positioned above map
+    pos_limit_y = df[df.iso_a3 == 'NOR'].centers_xy.values[0].y
 
-    texts = []
+    df['captions_xy'] = space_captions(df.centers_xy, spr_force_source, spr_dist, pos_limit_y)
+
+    # unused now, could be passed to library to try auto spacing
+    arrow_preps = []
     for i in range(0, df.shape[0]):
         if np.isnan(df.Growth[i]):
             continue
@@ -71,7 +91,15 @@ def plot_ovelapping_captions(plt, df):
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]),
                                 format_l(df.legalizeYear[i]))
-        texts += [add_caption(plt, txt, df.centers_xy[i], df.captions_xy[i])]
+        lbl = add_caption(plt, txt, df.centers_xy[i], df.captions_xy[i])
+        arrow_preps += [[i, lbl]]
+
+    # to clip arrows under transparent bboxes, nessesary to draw and save bboxes first
+    plt.draw()
+    for prep in arrow_preps:
+        i = prep[0]
+        lbl = prep[1]
+        add_arrow(plt, lbl, df.centers_xy[i], df.captions_xy[i])
 
 
 def clean_unicode_text(cl):
@@ -141,7 +169,7 @@ def plot_map(df_world_info, df_ru_info, col_min, col_max, show_info, caption_tex
     # add countries names and numbers
     plt.title(caption_text, fontsize=8, y=-0.2)
     if show_info:
-        plot_ovelapping_captions(plt, df_world_merged)
+        plot_captions(plt, df_world_merged)
 
     plt.plot()
     if wait:
