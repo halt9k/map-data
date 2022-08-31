@@ -11,7 +11,7 @@ import translations
 
 # years of interest (= last 20)
 # hardcoded: 2000 to 2020
-desc_growth = translations.GROWTH + ", 2000 -> 2020\n"
+desc_growth = translations.GROWTH + ", 2000 -> 2020,\n"
 
 # country filer: total_population
 # at the last year of interest
@@ -34,7 +34,7 @@ df_nb = get_nobel_winners_amount_2022()
 df_l = get_l_religions()
 
 # adding info to population table
-df_desc = desc_growth + ", " + translations.ALL_COUNTRIES
+df_desc = desc_growth + translations.ALL_COUNTRIES
 df = pd.merge(df_pc, df_le, on='Code', how='left', validate='1:1')
 df = pd.merge(df, df_nb, on='Code', how='left', validate='1:1')
 df = pd.merge(df, df_l, on='Code', how='left', validate='1:1')
@@ -53,11 +53,11 @@ df_sample_desc += translations.SPECIAL
 
 bins = np.arange(50, 200 + 1, 5)
 e1, e2 = th_expect_developed, th_expect_modern
-# plot_growth_hist(df, bins, df_desc, stop=False, th1=e1, th2=e2)
+plot_growth_hist(df, bins, df_desc, stop=False, th1=e1, th2=e2)
 
 bins = np.arange(50, 200 + 1, 5)
 e1, e2 = th_expect_developed, th_expect_modern
-# plot_growth_hist(df_sample, bins, df_sample_desc, stop=False, th1=e1, th2=e2)
+plot_growth_hist(df_sample, bins, df_sample_desc, stop=False, th1=e1, th2=e2)
 
 # = 90% ...  140%
 plot_map(df, df_ru_pc, col_min=80, col_max=150, show_info = False, caption_text=df_desc, asp=True, wait=False)

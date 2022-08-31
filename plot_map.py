@@ -2,7 +2,7 @@ import typing
 import pandas as pd
 import numpy as np
 
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 from shapely import affinity
 import geopandas
 
@@ -27,26 +27,27 @@ def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
 
         # lens styled positions adjust
         ratio = cur_dist / spr_dist
-        if 0.1 < ratio < 1.0:
+        if ratio < 1.0:
             # mul = 1 - ratio**0.2
-            mul = 1.5 / (ratio + 0.1) # + ratio ** 0.2 / 4.0
+            mul = 1 / (ratio + 0.05)
             dx, dy = -spr_repulse_center.x + pt_src.x, -spr_repulse_center.y + pt_src.y
-            max_mul = (pos_limit_y - spr_repulse_center.y) / dy
-            mul_y = np.fmin(abs(max_mul), mul)
-            pt_moved = affinity.translate(pt_src, dx * mul, dy * mul_y, 0)
+
+            pt_moved = affinity.translate(pt_src, dx * mul, dy * mul, 0)
+            pt_moved = Point(pt_moved.x, np.fmin(pos_limit_y, pt_moved.y))
         else:
             pt_moved = pt_src
 
         # preventing overlaps
-        crit_overlap = spr_dist * 0.1
-        for _ in range(5):
-            pt_near = has_overlaps(pt_moved, taken_pts, crit_overlap)
-            if pt_near:
-                cur_overlap = pt_moved.distance(pt_near) * 10
-                pt_moved = affinity.translate(pt_moved, cur_overlap, 0, 0)
-                print ('Ovelap, moved offset: ' + str(cur_overlap))
-            else:
+        crit_overlap = spr_dist * 0.2
+        for _ in range(0):
+            pt_taken = has_overlaps(pt_moved, taken_pts, crit_overlap)
+            if pt_taken is None:
                 break
+
+            # pt_taken
+
+            pt_moved = affinity.rotate(pt_moved, 10, pt_src)
+            print ('Rotate attempt')
 
         taken_pts += [pt_moved]
     return taken_pts
@@ -103,7 +104,8 @@ def plot_captions(fig, df):
     for i in range(0, df.shape[0]):
         if np.isnan(df.Growth[i]):
             continue
-        txt = "{}\n{}%\n{}y\n{}".format(df.iso_a3[i],
+        # txt = "{}\n{}%\n{}y\n{}" Include provokative labels
+        txt = "{}\n{}%\n{}y".format(df.iso_a3[i],
                                 round(df.Growth[i]),
                                 round(df.Expectancy[i]),
                                 format_l(df.legalizeYear[i]))
