@@ -13,6 +13,8 @@ World:
 		nobel-prizes.csv:
 		https://worldpopulationreview.com/country-rankings/nobel-prizes-by-country
 	
+		l-religions.csv:
+		not important, added just to annoy templated people, can be removed
 RU:	
 	CSV:
 		geoBoundaries-RUS-ADM1-all.zip:

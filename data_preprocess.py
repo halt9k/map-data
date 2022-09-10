@@ -22,7 +22,7 @@ def get_population_change_ru_2002_to_2022():
     # print(df)
 
     # original region names messed, rename goals from this file
-    correct_names = pd.read_csv("Data\\Ru\\ru_2022_correct_names.csv")
+    correct_names = pd.read_csv("Data\\Ru\\ru_2022_correct_names.csv", encoding='utf-8')    
 
     df.Region = clean(df.Region)
     correct_names['cleaned_iso_names'] = clean(correct_names.iso_name)
@@ -91,5 +91,11 @@ def get_nobel_winners_amount_2022():
     df = pd.read_csv("Data\\nobel-prizes.csv")
     df['Code'] = alpha3code(df.country)
     df.rename(columns = {'count':'Nobels'}, inplace = True)
+
+    return df
+
+def get_l_religions():
+    df = pd.read_csv("Data\\l-religions.csv")
+    df['Code'] = alpha3code(df.country)    
 
     return df
