@@ -1,6 +1,8 @@
 # Will do for one-time casual project
 
-# GROWTH = "%Growth"
+
+
+# GROWTH = "Population change, %, 2000->2020 (RU: 2002->2022)"
 # ALL_COUNTRIES = "all countries"
 # AMOUNT = "Amount of countries"
 
@@ -10,7 +12,7 @@
 # NOBELS = "NB: Total nobel prizes"
 
 
-GROWTH = "%Прирост* (Россия: 2002->2022)**"
+GROWTH = "Изменение населения, %, 2000->2020 (Россия*: 2002->2022**)"
 ALL_COUNTRIES = "Все страны"
 AMOUNT = "Всего стран"
 
