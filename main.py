@@ -11,7 +11,11 @@ import translations
 
 # years of interest (= last 20)
 # hardcoded: 2000 to 2020
-desc_growth = translations.GROWTH + ", 2000 -> 2020,\n"
+desc_growth = translations.GROWTH + '\n'
+
+assert ('2000' in desc_growth)
+assert ('2020' in desc_growth)
+
 
 # country filer: total_population
 # at the last year of interest
