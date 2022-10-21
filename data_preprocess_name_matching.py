@@ -9,6 +9,7 @@ import difflib
 from difflib import SequenceMatcher
 from heapq import nlargest as _nlargest
 
+
 def get_close_matches_indexes(word, possibilities, n=3, cutoff=0.6):
     """Use SequenceMatcher to return a list of the indexes of the best 
     "good enough" matches. word is a sequence for which close matches 
@@ -21,7 +22,7 @@ def get_close_matches_indexes(word, possibilities, n=3, cutoff=0.6):
     that don't score at least that similar to word are ignored.
     """
 
-    if not n >  0:
+    if not n > 0:
         raise ValueError("n must be > 0: %r" % (n,))
     if not 0.0 <= cutoff <= 1.0:
         raise ValueError("cutoff must be in [0.0, 1.0]: %r" % (cutoff,))
@@ -31,8 +32,8 @@ def get_close_matches_indexes(word, possibilities, n=3, cutoff=0.6):
     for idx, x in enumerate(possibilities):
         s.set_seq1(x)
         if s.real_quick_ratio() >= cutoff and \
-           s.quick_ratio() >= cutoff and \
-           s.ratio() >= cutoff:
+                s.quick_ratio() >= cutoff and \
+                s.ratio() >= cutoff:
             result.append((s.ratio(), idx))
 
     # Move the best scorers to head of list
@@ -41,8 +42,9 @@ def get_close_matches_indexes(word, possibilities, n=3, cutoff=0.6):
     # Strip scores for the best n matches
     return [x for score, x in result]
 
+
 def get_match(x_cleaned, regions_cleaned, regions_ISO):
-    matches = get_close_matches_indexes(x_cleaned, regions_cleaned, cutoff = 0.65)
+    matches = get_close_matches_indexes(x_cleaned, regions_cleaned, cutoff=0.65)
 
     if len(matches) == 0:
         print('WARNING: region with unknown modern name: ' + x_cleaned)
@@ -50,8 +52,8 @@ def get_match(x_cleaned, regions_cleaned, regions_ISO):
     if len(matches) > 0:
         used_name = regions_ISO[matches[0]]
         if len(matches) > 1:
-            print('WARNING: ambigious iso for: ' + x_cleaned + ': [ ' + 
-                  regions_cleaned[matches].to_string().replace('\n', ', ') + '] ->' + 
+            print('WARNING: ambigious iso for: ' + x_cleaned + ': [ ' +
+                  regions_cleaned[matches].to_string().replace('\n', ', ') + '] ->' +
                   used_name)
 
         return used_name
