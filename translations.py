@@ -31,7 +31,7 @@ def fill_translations():
     add_en('NOBLES', 'NB: Total nobel prizes')
     add_ru('NOBLES', 'NB: Всего нобелевских премий (Россия: 32)')
 
-    add_en('SPECIAL', '')
+    add_en('NOTE_RU', '')
     _txt = "* Учтено, что часть округов были объединены между 2002 и 2022, см. Корякский автономный округ и т.д.\n"
     _txt += "** для России нет таблиц 2000->2020, правка интервала на 2 года не влияет на результат, т.к. COVID < 0.3% \n"
-    add_ru('SPECIAL', _txt)
+    add_ru('NOTE_RU', _txt)
