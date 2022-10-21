@@ -1,4 +1,3 @@
-import typing
 import pandas as pd
 import numpy as np
 
@@ -9,8 +8,6 @@ import geopandas
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import matplotlib.patheffects as PathEffects
-
-import translations
 
 
 def has_overlaps(pt_moved, spaced_pts, crit_overlap):
@@ -155,7 +152,7 @@ def remove_geopandas_marigins(fig):
     fig.subplots_adjust(top=0.98, bottom=0, left=0, right=1, hspace=0, wspace=0)
 
 
-def plot_map(df_world_info, df_ru_info, col_min, col_max, show_info, caption_text, asp, wait):
+def plot_map(df_world_info, df_ru_info, col_range, show_info, title, asp, wait):
     df_world_areas = get_geopandas_world_map()
     df_ru_areas = get_ru_map()
 
@@ -172,7 +169,7 @@ def plot_map(df_world_info, df_ru_info, col_min, col_max, show_info, caption_tex
     df_ru_merged = pd.merge(df_ru_areas, df_ru_info, on='iso_name', how='left', validate='1:1')
 
     # plot world map
-    col_norm = mpl.colors.Normalize(vmin=col_min, vmax=col_max)
+    col_norm = mpl.colors.Normalize(vmin=col_range[0], vmax=col_range[1])
     skipped_areas_desc = {"color": "lightgrey", "edgecolor": "black", "label": ""}
 
     plt.rcParams.update({'font.size': 8})
@@ -195,7 +192,7 @@ def plot_map(df_world_info, df_ru_info, col_min, col_max, show_info, caption_tex
         ax.set_aspect('equal')
 
     # add countries names and numbers
-    plt.title(caption_text, fontsize=8, y=-0.24)
+    plt.title(title, fontsize=8, y=-0.24)
     if show_info:
         plot_captions(fig, df_world_merged)
 
