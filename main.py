@@ -1,6 +1,5 @@
-from i18n import t
-
-from data_preprocess import *
+from Data.df_preprocess_world import *
+from Data.df_preprocess_ru import get_df_population_change_ru
 from plot_hist import plot_growth_hist
 from plot_map import plot_map
 
@@ -27,7 +26,7 @@ CT_LE_DELEVOPED = 65.0
 CT_LE_MODERN = 76.0
 CT_LE_AT_Y = 2019
 
-df_pc_ru, info_pc_ru = get_df_population_change_ru_2002_to_2022(C_FROM_Y, C_TO_Y)
+df_pc_ru, info_pc_ru = get_df_population_change_ru(C_FROM_Y, C_TO_Y)
 
 df_pc, info_pc = get_df_population_change(C_FROM_Y, C_TO_Y)
 df_le, info_le = get_df_life_expectancy(CT_LE_AT_Y)
