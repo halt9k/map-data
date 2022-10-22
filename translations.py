@@ -1,6 +1,4 @@
-from i18n import add_translation, set as iset, t
-
-iset('locale', 'ru')
+from i18n import add_translation, set as loc_set, t
 
 
 def fill_translations():

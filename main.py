@@ -5,9 +5,10 @@ from consts import *
 from plot_hist import plot_growth_hist
 from plot_map import plot_map
 
-from translations import fill_translations, t
+from translations import fill_translations, loc_set, t
 
 fill_translations()
+loc_set('locale', 'en')
 
 df_pc, info_pc = get_df_population_change(C_FROM_Y, C_TO_Y)
 df_pc_summary = info_pc.format(where=t('ALL_COUNTRIES'))
