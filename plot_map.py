@@ -116,14 +116,16 @@ def get_caption_pos_adjust_params(df):
     return spr_force_source, spr_dist, pos_limit_y
 
 
-def plot_captions(fig, df):
+def plot_captions(fig, df, try_space=True):
     df['centers_xy'] = df.centroid
-
-    spr_force_source, spr_dist, pos_limit_y = get_caption_pos_adjust_params(df)
 
     # simple approach without magnifying
     # will overlap all over EU
-    df['captions_xy'] = space_caption_positions(df.centers_xy, spr_force_source, spr_dist, pos_limit_y)
+    if try_space:
+        spr_force_source, spr_dist, pos_limit_y = get_caption_pos_adjust_params(df)
+        df['captions_xy'] = space_caption_positions(df.centers_xy, spr_force_source, spr_dist, pos_limit_y)
+    else:
+        df['captions_xy'] = df.centers_xy
 
     # unused now, could be passed to library to try auto spacing
     arrow_preps = []
@@ -211,13 +213,13 @@ def plot_map(df_world, df_ru, col_range, show_info, title, fix_aspect, wait):
     decrease_marigins(fig)
 
     df_world_merged.plot(column='Growth', ax=ax,
-                         norm=col_norm, cmap='plasma',
+                         norm=col_norm, cmap='jet',
                          legend=True, legend_kwds={'shrink': 0.3, 'orientation': "horizontal", 'format': "%d%%"},
                          edgecolor='black',
                          missing_kwds=skipped_areas_desc)
 
     df_ru_merged.plot(column='Growth', ax=ax,
-                      norm=col_norm, cmap='plasma',
+                      norm=col_norm, cmap='jet',
                       legend=False,
                       missing_kwds=skipped_areas_desc)
 
