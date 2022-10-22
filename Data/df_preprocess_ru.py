@@ -31,10 +31,10 @@ def get_df_population_change_ru(year_from, year_to):
     df.Region = prepare_fuzzy_matching(df.Region)
     correct_names['cleaned_iso_names'] = prepare_fuzzy_matching(correct_names.iso_name)
 
-    def get_matching_name(name):
+    def get_best_guess(name):
         return match_name_to_iso(name, correct_names.cleaned_iso_names, correct_names.iso_name)
 
-    df['iso_name'] = df.Region.apply(lambda x: get_matching_name(x))
+    df['iso_name'] = df.Region.apply(lambda x: get_best_guess(x))
 
     print('Replaced: \n' + str(df.Region + ' -> ' + df.iso_name))
     df['Growth'] = df.p_2022.div(df.p_2002).mul(100)
