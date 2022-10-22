@@ -34,9 +34,7 @@ def get_df_life_expectancy(year_at):
     df = df[df.Year == year_at]
     df = filter_irregular_codes(df)
 
-    desc = t('EXPECTANCY') + ", {}; ".format(year_at)
-
-    return df, desc
+    return df
 
 
 def get_df_nobels_amount(year_at):
@@ -45,9 +43,8 @@ def get_df_nobels_amount(year_at):
     df.rename(columns={'count': 'Nobels'}, inplace=True)
 
     assert(str(year_at) in str(df.columns))
-    desc = t('NOBLES') + ", {}; \n".format(year_at)
 
-    return df, desc
+    return df
 
 
 def get_df_l_religions():

@@ -18,8 +18,9 @@ def has_overlaps(pt_moved, spaced_pts, crit_overlap):
     return None
 
 
-# must operate under geo coodrinates, not plane xy
 def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
+    # must operate under geo coodrinates, not plane xy
+
     taken_pts = []
     for pt_src in src_points:
         cur_dist = pt_src.distance(spr_repulse_center)
@@ -124,7 +125,7 @@ def clean_unicode_text(cl):
 
 
 def get_ru_map():
-    ru_shape = geopandas.GeoDataFrame.from_file("Data\\Ru\\Simplified\\geoBoundaries-RUS-ADM1_simplified.shp")
+    ru_shape = geopandas.GeoDataFrame.from_file("Data/Ru/_Simplified\\geoBoundaries-RUS-ADM1_simplified.shp")
     ru_shape.shapeName = clean_unicode_text(ru_shape.shapeName)
     return ru_shape
 
