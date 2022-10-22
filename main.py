@@ -26,5 +26,5 @@ df_filtered_summary += info_filtered
 plot_growth_hist(df_merged, df_pc_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
 plot_growth_hist(df_filtered, df_filtered_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
 
-plot_map(df_merged, df_pc_ru, col_range=(80, 150), show_info=False, title=df_pc_summary, asp=True, wait=False)
-plot_map(df_filtered, df_pc_ru, col_range=(80, 130), show_info=True, title=df_filtered_summary, asp=False, wait=True)
+plot_map(df_merged, df_pc_ru, col_range=(80, 150), show_info=False, title=df_pc_summary, fix_aspect=True, wait=False)
+plot_map(df_filtered, df_pc_ru, col_range=(80, 130), show_info=True, title=df_filtered_summary, fix_aspect=False, wait=True)

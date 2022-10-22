@@ -7,56 +7,13 @@ import geopandas
 
 import matplotlib as mpl
 from matplotlib import pyplot as plt
-import matplotlib.patheffects as PathEffects
-
-
-def has_overlaps(pt_moved, spaced_pts, crit_overlap):
-    for pt_taken in spaced_pts:
-        cur_overlap = pt_moved.distance(pt_taken)
-        if cur_overlap < crit_overlap:
-            return pt_taken
-    return None
-
-
-def space_captions(src_points, spr_repulse_center, spr_dist, pos_limit_y):
-    # must operate under geo coodrinates, not plane xy
-
-    taken_pts = []
-    for pt_src in src_points:
-        cur_dist = pt_src.distance(spr_repulse_center)
-
-        # lens styled positions adjust
-        ratio = cur_dist / spr_dist
-        if 0 < ratio < 1.0:
-            # mul = 1 - ratio**0.2
-            mul = 1 / (ratio + 0.05)
-            dx, dy = -spr_repulse_center.x + pt_src.x, -spr_repulse_center.y + pt_src.y
-
-            pt_moved = affinity.translate(pt_src, dx * mul, dy * mul, 0)
-            pt_moved = Point(pt_moved.x, np.fmin(pos_limit_y, pt_moved.y))
-        else:
-            pt_moved = pt_src
-
-        # preventing overlaps
-        crit_overlap = spr_dist * 0.2
-        for _ in range(0):
-            pt_taken = has_overlaps(pt_moved, taken_pts, crit_overlap)
-            if pt_taken is None:
-                break
-
-            # pt_taken
-
-            pt_moved = affinity.rotate(pt_moved, 10, pt_src)
-            print('Rotate attempt')
-
-        taken_pts += [pt_moved]
-    return taken_pts
+# import matplotlib.patheffects as PathEffects
 
 
 def add_arrow(rendered_label, pt_tgt, pt_caption):
     x, y, dx, dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y
 
-    # overlaps label itself
+    # decreases overlap of arrow over label of this arrow
     x += dx * 0.1
     y += dy * 0.1
     dx *= 0.9
@@ -66,9 +23,17 @@ def add_arrow(rendered_label, pt_tgt, pt_caption):
     plt.arrow(x, y, dx, dy, head_width=0.5, head_length=1, linewidth=0.5)
 
 
-def add_caption(txt, pt_tgt, pt_caption):
-    x, y, dx, dy = pt_caption.x, pt_caption.y, pt_tgt.x - pt_caption.x, pt_tgt.y - pt_caption.y
+def plot_arrows_from_captions(fig, df, arrow_preps):
+    # to clip arrows under transparent bboxes, nessesary to draw and save bboxes first
+    fig.canvas.draw()
 
+    for prep in arrow_preps:
+        i = prep[0]
+        lbl = prep[1]
+        add_arrow(lbl, df.centers_xy[i], df.captions_xy[i])
+
+
+def add_caption(txt, pt_caption):
     lbl = plt.text(pt_caption.x, pt_caption.y, txt, size=7, color='black', ha='center', va='center')
     lbl.set_bbox(dict(facecolor='white', alpha=0.8, linewidth=0.5, pad=1))
     return lbl
@@ -81,10 +46,61 @@ def format_l(year):
         return 'L' + str(int(year))
 
 
-# without magnifying tricks captions will overlap badly over EU
-def plot_captions(fig, df):
-    df['centers_xy'] = df.centroid
+def has_overlaps(pt_moved, spaced_pts, crit_overlap):
+    for pt_taken in spaced_pts:
+        cur_overlap = pt_moved.distance(pt_taken)
+        if cur_overlap < crit_overlap:
+            return pt_taken
+    return None
 
+
+def lens(pt_src, pt_lens_center, lens_force, pos_limit_y):
+    cnt_dist = pt_src.distance(pt_lens_center)
+
+    # lens styled positions adjust
+    ratio = cnt_dist / lens_force
+    if 0 < ratio < 1.0:
+        # mul = 1 - ratio**0.2
+        mul = 1 / (ratio + 0.05)
+        dx, dy = -pt_lens_center.x + pt_src.x, -pt_lens_center.y + pt_src.y
+
+        pt_moved = affinity.translate(pt_src, dx * mul, dy * mul, 0)
+        return Point(pt_moved.x, np.fmin(pos_limit_y, pt_moved.y))
+    else:
+        return pt_src
+
+
+def try_avoid_overlaps(pt_src, pt_moved, adjusted_pts, lens_force):
+    # disabled now
+
+    crit_overlap = lens_force * 0.2
+    for _ in range(0):
+        pt_taken = has_overlaps(pt_moved, adjusted_pts, crit_overlap)
+        if pt_taken is None:
+            break
+
+        # pt_taken
+
+        pt_moved = affinity.rotate(pt_moved, 10, pt_src)
+        print('Rotate attempt')
+
+    return pt_moved
+
+
+def space_caption_positions(src_pts, pt_lens_center, lens_force, pos_limit_y):
+    # must operate under geo coodrinates, not plane xy
+    # spr_dist = 0 means no caption position adjusting
+
+    adjusted_pts = []
+    for pt_src in src_pts:
+        pt_moved = lens(pt_src, pt_lens_center, lens_force, pos_limit_y)
+        pt_moved = try_avoid_overlaps(pt_src, pt_moved, adjusted_pts, lens_force)
+
+        adjusted_pts += [pt_moved]
+    return adjusted_pts
+
+
+def get_caption_pos_adjust_params(df):
     # point for magnifying is selected between l1 and l2
     # matplotlib.pyplot.arrow(x, y, dx, dy, **kwargs)
     l1_pos = df[df.iso_a3 == 'POL'].centers_xy.values[0]
@@ -97,7 +113,17 @@ def plot_captions(fig, df):
     # used to limit labels from being positioned above map
     pos_limit_y = df[df.iso_a3 == 'NOR'].centers_xy.values[0].y
 
-    df['captions_xy'] = space_captions(df.centers_xy, spr_force_source, spr_dist, pos_limit_y)
+    return spr_force_source, spr_dist, pos_limit_y
+
+
+def plot_captions(fig, df):
+    df['centers_xy'] = df.centroid
+
+    spr_force_source, spr_dist, pos_limit_y = get_caption_pos_adjust_params(df)
+
+    # simple approach without magnifying
+    # will overlap all over EU
+    df['captions_xy'] = space_caption_positions(df.centers_xy, spr_force_source, spr_dist, pos_limit_y)
 
     # unused now, could be passed to library to try auto spacing
     arrow_preps = []
@@ -109,15 +135,10 @@ def plot_captions(fig, df):
                                     round(df.Growth[i]),
                                     round(df.Expectancy[i]),
                                     format_l(df.legalizeYear[i]))
-        lbl = add_caption(txt, df.centers_xy[i], df.captions_xy[i])
+        lbl = add_caption(txt, df.captions_xy[i])
         arrow_preps += [[i, lbl]]
 
-    # to clip arrows under transparent bboxes, nessesary to draw and save bboxes first
-    fig.canvas.draw()
-    for prep in arrow_preps:
-        i = prep[0]
-        lbl = prep[1]
-        add_arrow(lbl, df.centers_xy[i], df.captions_xy[i])
+    plot_arrows_from_captions(fig, df, arrow_preps)
 
 
 def clean_unicode_text(cl):
@@ -148,34 +169,46 @@ def get_geopandas_world_map():
     return world
 
 
-def remove_geopandas_marigins(fig):
+def decrease_marigins(fig):
+    # default geopandas marigins are enourmously huge
+
     fig.tight_layout(pad=0)
     fig.subplots_adjust(top=0.98, bottom=0, left=0, right=1, hspace=0, wspace=0)
 
 
-def plot_map(df_world_info, df_ru_info, col_range, show_info, title, asp, wait):
+def set_mercurial_projection(areas):
+    areas.to_crs("EPSG:3395", inplace=True)
+
+
+def add_df_columns_to_map_data(df_world, df_ru):
+    # uses internal world preset and external ru map
+
     df_world_areas = get_geopandas_world_map()
     df_ru_areas = get_ru_map()
 
-    # projection magic
     assert (df_world_areas.crs == df_ru_areas.crs)
-    df_world_areas = df_world_areas.to_crs("EPSG:3395")
-    df_ru_areas = df_ru_areas.to_crs("EPSG:3395")
+    set_mercurial_projection(df_world_areas)
+    set_mercurial_projection(df_ru_areas)
 
     # merge geo shape data with provided data
-    df_world_info.rename(columns={'Code': 'iso_a3'}, inplace=True)
-    df_world_merged = pd.merge(df_world_areas, df_world_info, on='iso_a3', how='left')  # CYP 2x , validate='1:1')
+    df_world.rename(columns={'Code': 'iso_a3'}, inplace=True)
+    df_world_merged = pd.merge(df_world_areas, df_world, on='iso_a3', how='left')  # CYP 2x , validate='1:1')
 
     df_ru_areas.rename(columns={'shapeName': 'iso_name'}, inplace=True)
-    df_ru_merged = pd.merge(df_ru_areas, df_ru_info, on='iso_name', how='left', validate='1:1')
+    df_ru_merged = pd.merge(df_ru_areas, df_ru, on='iso_name', how='left', validate='1:1')
 
-    # plot world map
+    return df_world_merged, df_ru_merged
+
+
+def plot_map(df_world, df_ru, col_range, show_info, title, fix_aspect, wait):
+    df_world_merged, df_ru_merged = add_df_columns_to_map_data(df_world, df_ru)
+
     col_norm = mpl.colors.Normalize(vmin=col_range[0], vmax=col_range[1])
     skipped_areas_desc = {"color": "lightgrey", "edgecolor": "black", "label": ""}
 
     plt.rcParams.update({'font.size': 8})
     fig, ax = plt.subplots(figsize=(20, 16))
-    remove_geopandas_marigins(fig)
+    decrease_marigins(fig)
 
     df_world_merged.plot(column='Growth', ax=ax,
                          norm=col_norm, cmap='plasma',
@@ -188,11 +221,12 @@ def plot_map(df_world_info, df_ru_info, col_range, show_info, title, asp, wait):
                       legend=False,
                       missing_kwds=skipped_areas_desc)
 
-    # became adjusted after 2nd .plot call with limited area
-    if ~asp:
+    # aspect became adjusted indirectly
+    # on 2nd .plot call with limited area
+    if ~fix_aspect:
         ax.set_aspect('equal')
 
-    # add countries names and numbers
+    # add country names and numbers
     plt.title(title, fontsize=8, y=-0.24)
     if show_info:
         plot_captions(fig, df_world_merged)
