@@ -1,20 +1,25 @@
-# map-data
-Idea of this script was to visually overview how world population changed during last 20 years in different world regions.  
+# Map data
+Idea of this script was to map world population change during last 20 years in leading countries.  
 
-There was a number of adjustements, currently it plots pair of historgams and pair of improved maps.  
-It's also easy to modify for any similar table->map plotting needs.  
+Currently it plots pair of histograms and pair of improved maps.  
+It's also easy to modify for any similar table->regional map plotting needs.  
 
-- Used data tables were half-prepared manually (including unavoidable fuzzy matching of web sources), half downloaded from fluent places like ![Our World In Data:](https://ourworldindata.org/).  
+- Used data tables were partially found and fuzzy merged manually, partially downloaded from fluent places like [Our World In Data]( https://ourworldindata.org).  
 
-- This is combined two-layer (two-region) map with Mercurial projection. GeoPandas makes both very easy to use.
+- Maps use Mercurial projection, one of maps utilizes two layers (=regions). GeoPandas makes both layers and projections very easy to use.
 
-- Properly placing lables on map, howerer, was trickier. There exists SO solution which was not usable, I tried to test lens approach to prevent from Europe being overlapped.
+- Info labels were overlapping over EU, which standard SO solution still kept. Used custom lens approach to solve this.
 
+<p float="left">
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/en/map_world_leaders.png" width="400" align="Center"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/ru/map_world_leaders_ru.png" width="400" align="Center"/>
+</p>  
 
-![MapLead:](https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world_leaders.png)
+Other intermediate outputs related to scale choices and to pre-process:
 
-![HistAll:](https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_world.png)
-![HistLead:](https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_leaders.png)
-![MapAll:](https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world.png)
-
-
+<p float="left"; vertical-align="top">
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/en/map_world.png" width="250" align="center"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/en/hist_world.png" width="250" align="top"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/en/hist_leaders.png" width="250" align="top"/> 
+</p>
+</div>
