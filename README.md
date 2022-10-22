@@ -4,7 +4,7 @@ Idea of this script was to visually overview how world population changed during
 There was a number of adjustments, currently it plots pair of histograms and pair of improved maps.  
 It's also easy to modify for any similar table->map plotting needs.  
 
-- Used data tables were partially found and fuzzy merged manually, partially downloaded from fluent places like ![Our World In Data:](https://ourworldindata.org/).  
+- Used data tables were partially found and fuzzy merged manually, partially downloaded from fluent places like [Our World In Data]( https://ourworldindata.org).  
 
 - Maps use Mercurial projection, one of maps utilizes two layers (=regions). GeoPandas makes both layers and projections very easy to use.
 
