@@ -6,7 +6,7 @@ It's also easy to modify for any similar table->map plotting needs.
 
 - Used data tables were half-prepared manually (including unavoidable fuzzy matching of web sources), half downloaded from fluent places like ![Our World In Data:](https://ourworldindata.org/).  
 
-- This is combined two-layer (two-region) map with Mercurial projection. GeoPandas makes both layers and projections very easy to use.
+- This is combined two-layer (two-region) map with Mercurial projection. GeoPandas makes both very easy to use.
 
 - Properly placing lables on map, howerer, was trickier. There exists SO solution which was not usable, I tried to test lens approach to prevent from Europe being overlapped.
 
