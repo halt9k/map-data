@@ -22,8 +22,8 @@ def fill_translations():
 	add_en('ONLY', 'Only countries with: ')
 	add_ru('ONLY', 'Только мировые лидеры с: ')
 
-	add_en('POPULATION', 'P: population')
-	add_ru('POPULATION', 'P: население (Россия: 146.8М)')
+	add_en('POPULATION', 'P: Population')
+	add_ru('POPULATION', 'P: Население (Россия: 146.8М)')
 
 	add_en('EXPECTANCY', 'LE: Life expectancy')
 	add_ru('EXPECTANCY', 'LE: Ср. продолжительность жизни (Россия: 73.4, РИА)')
