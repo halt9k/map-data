@@ -227,7 +227,7 @@ def plot_map(df_world, df_ru, col_range, show_info, title, fix_aspect, wait):
         ax.set_aspect('equal')
 
     # add country names and numbers
-    plt.title(title, fontsize=8, y=-0.24)
+    plt.title(title, fontsize=12, y=-0.20)
     if show_info:
         plot_captions(fig, df_world_merged)
 
