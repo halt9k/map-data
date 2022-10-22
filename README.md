@@ -11,15 +11,15 @@ It's also easy to modify for any similar table->map plotting needs.
 - Properly placing lables on map, howerer, was trickier. There exists SO solution which was not usable, I tried to test lens approach to prevent from Europe being overlapped.
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world_leaders.png" width="500" align="center"/>
-  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/ru/map_world_leaders_ru.png" width="500" align="center"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world_leaders.png" width="400" align="center"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/ru/map_world_leaders_ru.png" width="400" align="center"/>
 </p>  
 
 Other intermediate outputs related to scale choises and to preporcess:
 
 <p float="left"; vertical-align="top">
-  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world.png" width="300" align="center"/>
-  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_world.png" width="300" align="top"/>
-  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_leaders.png" width="300" align="top"/> 
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/map_world.png" width="250" align="center"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_world.png" width="250" align="top"/>
+  <img src="https://raw.githubusercontent.com/halt9k/map-data/master/Test/Output_examples/en/hist_leaders.png" width="250" align="top"/> 
 </p>
 </div>
