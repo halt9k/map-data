@@ -19,12 +19,10 @@ def match_name_to_iso(fuzzy_name, valid_names, valid_iso):
 
 
 def code_to_alpha_3_iso(column):
-    # Country names from codes
+    # codes to Country names
 
     Codes = []
     for country_name in column:
-        # .alpha_3 means 3-letter country code
-        # .alpha_2 means 2-letter country code
         country = pycountry.countries.get(name=country_name)
 
         if country is None:
@@ -35,6 +33,8 @@ def code_to_alpha_3_iso(column):
             except:
                 country = None
 
+        # .alpha_3 means 3-letter country code
+        # .alpha_2 means 2-letter country code
         if country is None:
             Codes.append('UNK')
         else:
