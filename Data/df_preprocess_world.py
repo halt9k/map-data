@@ -19,7 +19,7 @@ def get_df_population_change(year_from, year_to):
     df.rename(columns={2000: 'at_2000', 2020: 'at_2020'}, inplace=True)
     df['Growth'] = df.at_2020.div(df.at_2000).mul(100)
 
-    desc = t('GROWTH') + '\n'
+    desc = t('GROWTH')
     assert (str(year_from) in desc)
     assert (str(year_to) in desc)
 

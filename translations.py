@@ -1,17 +1,17 @@
-from i18n import add_translation, set as iset
+from i18n import add_translation, set as iset, t
 
-iset('locale', 'en')
+iset('locale', 'ru')
 
 
 def fill_translations():
-	def add_en(k, t):
-		add_translation(k, t, 'en')
+	def add_en(key, tn):
+		add_translation(key, tn, 'en')
 
-	def add_ru(k, t):
-		add_translation(k, t, 'ru')
+	def add_ru(key, tn):
+		add_translation(key, tn, 'ru')
 
-	add_en('GROWTH', 'Population change, %, 2000->2020 (RU: 2002->2022), {where}')
-	add_ru('GROWTH', 'Изменение населения, %, 2000->2020 (Россия*: 2002->2022**), {where}')
+	add_en('GROWTH', 'Population change, %, 2000->2020 (RU: 2002->2022), \n {where}')
+	add_ru('GROWTH', 'Изменение населения, %, 2000->2020 (Россия*: 2002->2022**), \n {where}')
 
 	add_en('ALL_COUNTRIES', 'All countries')
 	add_ru('ALL_COUNTRIES', 'Все страны')
