@@ -1,4 +1,4 @@
-# map-data
+# Map data
 Idea of this script was to map world population change during last 20 years in leading countries.  
 
 Currently it also plots pair of histograms and pair of improved maps.  
