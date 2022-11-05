@@ -1,7 +1,7 @@
 # Map data
 Idea of this script was to map world population change during last 20 years in leading countries.  
 
-Currently it also plots pair of histograms and pair of improved maps.  
+Currently it plots pair of histograms and pair of improved maps.  
 It's also easy to modify for any similar table->regional map plotting needs.  
 
 - Used data tables were partially found and fuzzy merged manually, partially downloaded from fluent places like [Our World In Data]( https://ourworldindata.org).  
