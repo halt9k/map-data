@@ -148,7 +148,7 @@ def clean_unicode_text(cl):
 
 
 def get_ru_map():
-    ru_shape = geopandas.GeoDataFrame.from_file("Data/Ru/_Simplified\\geoBoundaries-RUS-ADM1_simplified.shp")
+    ru_shape = geopandas.GeoDataFrame.from_file("data/ru/_simplified\\geoBoundaries-RUS-ADM1_simplified.shp")
     ru_shape.shapeName = clean_unicode_text(ru_shape.shapeName)
     return ru_shape
 

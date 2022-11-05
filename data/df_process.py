@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from i18n import t
 
-from Data.df_preprocess_world import get_df_life_expectancy, get_df_nobels_amount, get_df_l_religions
+from data.df_preprocess_world import get_df_life_expectancy, get_df_nobels_amount, get_df_l_religions
 from consts import *
 
 
