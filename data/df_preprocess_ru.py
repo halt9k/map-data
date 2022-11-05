@@ -1,7 +1,7 @@
 import pandas as pd
 from i18n import t
 
-from Data.geo_helpers import match_name_to_iso
+from data.geo_helpers import match_name_to_iso
 
 
 def prepare_fuzzy_matching(df_column):
@@ -19,14 +19,14 @@ def prepare_fuzzy_matching(df_column):
 
 
 def get_df_population_change_ru(year_from, year_to):
-    df = pd.read_csv("Data\\Ru\\ru_2002_2022.csv")
+    df = pd.read_csv("data\\ru\\ru_2002_2022.csv")
     # print(df)
 
     assert (str(year_from + 2) in str(df.columns))
     assert (str(year_to + 2) in str(df.columns))
 
     # original region names messed, rename goals from this file
-    correct_names = pd.read_csv("Data\\Ru\\ru_2022_correct_names.csv", encoding='utf-8')
+    correct_names = pd.read_csv("data\\ru\\ru_2022_correct_names.csv", encoding='utf-8')
 
     df.Region = prepare_fuzzy_matching(df.Region)
     correct_names['cleaned_iso_names'] = prepare_fuzzy_matching(correct_names.iso_name)

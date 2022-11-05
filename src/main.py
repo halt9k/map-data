@@ -1,6 +1,6 @@
-from Data.df_preprocess_world import get_df_population_change
-from Data.df_preprocess_ru import get_df_population_change_ru
-from Data.df_process import merge_geo_tables, filter_geo_table
+from data.df_preprocess_world import get_df_population_change
+from data.df_preprocess_ru import get_df_population_change_ru
+from data.df_process import merge_geo_tables, filter_geo_table
 from consts import *
 from plot_hist import plot_growth_hist
 from plot_map import plot_map

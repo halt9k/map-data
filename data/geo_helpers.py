@@ -1,6 +1,6 @@
 import pycountry
 
-from Data.text_helpers import get_match_ids
+from data.text_helpers import get_match_ids
 
 
 def match_name_to_iso(fuzzy_name, valid_names, valid_iso):
