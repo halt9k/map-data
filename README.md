@@ -8,7 +8,7 @@ It's also easy to modify for any similar table->regional map plotting needs.
 
 - Maps use Mercurial projection, one of maps utilizes two layers (=regions). GeoPandas makes both layers and projections very easy to use.
 
-- Properly placing labels on map, however, was trickier. There exists SO solution which was not usable, I tried to test lens approach to prevent Europe being overlapped.
+- Info labels were overlapping over EU, which standard SO solution still kept. Used custom lens approach to solve this.
 
 <p float="left">
   <img src="https://raw.githubusercontent.com/halt9k/map-data/master/test/output_examples/en/map_world_leaders.png" width="400" align="Center"/>
