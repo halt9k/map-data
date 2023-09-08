@@ -3,7 +3,7 @@ import pandas as pd
 from i18n import t
 
 from data.df_preprocess_world import get_df_life_expectancy, get_df_nobels_amount, get_df_l_religions
-from consts import *
+from src.consts import *
 
 
 def merge_geo_tables(df_into):

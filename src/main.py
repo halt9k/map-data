@@ -7,23 +7,55 @@ from plot_map import plot_map
 
 from translations import fill_translations, loc_set, t
 
-fill_translations()
-loc_set('locale', 'en')
 
-df_pc, info_pc = get_df_population_change(C_FROM_Y, C_TO_Y)
-df_pc_summary = info_pc.format(where=t('ALL_COUNTRIES'))
+class Dataframes:
+    def __init__(self):
+        self.pc = None
+        self.pc_summary = None
+        self.pc_ru = None
+        self.merged = None
+        self.filtered = None
+        self.filtered_summary = None
 
-df_pc_ru, info_pc_ru = get_df_population_change_ru(C_FROM_Y, C_TO_Y)
 
-df_merged = merge_geo_tables(df_pc)
-df_filtered, info_filtered = filter_geo_table(df_merged)
+def init_app():
+    fill_translations()
+    loc_set('locale', 'en')
 
-df_filtered_summary = info_pc.format(where=t('ONLY'))
-df_filtered_summary += info_filtered
-df_filtered_summary += info_pc_ru
 
-plot_growth_hist(df_merged, df_pc_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
-plot_growth_hist(df_filtered, df_filtered_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
+def prep_dataframes():
+    df = Dataframes()
+    df.pc = None
+    df.pc, info_pc = get_df_population_change(C_FROM_Y, C_TO_Y)
+    df.pc_summary = info_pc.format(where=t('ALL_COUNTRIES'))
 
-plot_map(df_merged, df_pc_ru, col_range=(80, 150), show_info=False, title=df_pc_summary, fix_aspect=True, wait=False)
-plot_map(df_filtered, df_pc_ru, col_range=(80, 130), show_info=True, title=df_filtered_summary, fix_aspect=False, wait=True)
+    df.pc_ru, info_pc_ru = get_df_population_change_ru(C_FROM_Y, C_TO_Y)
+
+    df.merged = merge_geo_tables(df.pc)
+    df.filtered, info_filtered = filter_geo_table(df.merged)
+
+    df.filtered_summary = info_pc.format(where=t('ONLY'))
+    df.filtered_summary += info_filtered
+    df.filtered_summary += info_pc_ru
+
+    return df
+
+
+def plot(dataframes):
+    dfs = dataframes
+    plot_growth_hist(dfs.merged, dfs.pc_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
+    plot_growth_hist(dfs.filtered, dfs.filtered_summary, C_HIST_BINS, C_HIST_THRESHOLDS)
+
+    plot_map(dfs.merged, dfs.pc_ru, col_range=(80, 150), show_info=False, title=dfs.pc_summary, fix_aspect=True, wait=False)
+    plot_map(dfs.filtered, dfs.pc_ru, col_range=(80, 130), show_info=True, title=dfs.filtered_summary, fix_aspect=False, wait=True)
+
+
+def main():
+    init_app()
+
+    dataframes = prep_dataframes()
+    plot(dataframes)
+
+
+if __name__ == '__main__':
+    main()
