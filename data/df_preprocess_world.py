@@ -7,7 +7,7 @@ from data.geo_helpers import code_to_alpha_3_iso, filter_irregular_codes
 
 
 def get_df_population_change(year_from, year_to):
-    df = pd.read_csv("data\\world\\population-since-1800.csv", dtype={'Code': np.str})
+    df = pd.read_csv("data\\world\\population-since-1800.csv", dtype={'Code': str})
     # print(df)
     df.rename(columns={'Population (historical estimates)': 'Population'}, inplace=True)
 
@@ -27,7 +27,7 @@ def get_df_population_change(year_from, year_to):
 
 
 def get_df_life_expectancy(year_at):
-    df = pd.read_csv("data\\world\\life-expectancy.csv", dtype={'Code': np.str})
+    df = pd.read_csv("data\\world\\life-expectancy.csv", dtype={'Code': str})
     # print(df)
     df.rename(columns={'Life expectancy': 'Expectancy'}, inplace=True)
 

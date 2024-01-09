@@ -1,4 +1,4 @@
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, style
 from math import isnan
 from i18n import t
 
@@ -35,7 +35,7 @@ def plot_growth_hist(df, caption, bins, thresholds, stop=False):
 
     # bins = np.concatenate(([0], np.arange(90, 120+1, 2), [1000]))
     fig, ax = plt.subplots()
-    plt.style.use('seaborn-deep')
+    # plt.style.use('seaborn-deep')
 
     ax.set_xticks(bins)
     plt.hist(growths, bins, label=labels, color=colors)
