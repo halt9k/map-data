@@ -12,9 +12,14 @@ def merge_geo_tables(df_into):
 	df_l = get_df_l_religions()
 
 	# combining all to unfiltered table
-	df = pd.merge(df_into, df_le, on='Code', how='left', validate='1:1')
-	df = pd.merge(df, df_nb, on='Code', how='left', validate='1:1')
-	df = pd.merge(df, df_l, on='Code', how='left', validate='1:1')
+	# df = pd.merge(df_into, df_le, on='Code', how='left', validate='1:1')
+	# df = pd.merge(df, df_nb, on='Code', how='left', validate='1:1')
+	# df = pd.merge(df, df_l, on='Code', how='left', validate='1:1')
+	# TODO vlidation
+	df = pd.merge(df_into, df_le, on='Code', how='left')
+	df = pd.merge(df, df_nb, on='Code', how='left')
+	df = pd.merge(df, df_l, on='Code', how='left')
+
 
 	return df
 

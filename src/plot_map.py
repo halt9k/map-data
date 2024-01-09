@@ -153,17 +153,23 @@ def get_ru_map():
     return ru_shape
 
 
-def get_geopandas_world_map():
-    # 'naturalearth_lowres' is internal geopandas dataset
-    world = geopandas.GeoDataFrame.from_file(geopandas.datasets.get_path('naturalearth_lowres'))
+def try_apply_geopandas_bugfix(world: pd.DataFrame):
+    # geopandas bugfix fol older versions of naturalearth_lowres_table
 
-    # geopandas bugfix wtf
-    assert (world[world.name == 'France'].iso_a3.values[0] == '-99')
+    if world[world.name == 'France'].iso_a3.values[0] != '-99':
+        return
+
     world.loc[world.name == 'France', 'iso_a3'] = 'FRA'
     world.loc[world.name == 'Norway', 'iso_a3'] = 'NOR'
     world.loc[world.name == 'N. Cyprus', 'iso_a3'] = 'CYP'
     world.loc[world.name == 'Somaliland', 'iso_a3'] = 'SOM'
     world.loc[world.name == 'Kosovo', 'iso_a3'] = 'RKS'
+
+
+def get_geopandas_world_map():
+    # 'naturalearth_lowres' is internal geopandas dataset
+    world = geopandas.GeoDataFrame.from_file(geopandas.datasets.get_path('naturalearth_lowres'))
+    try_apply_geopandas_bugfix(world)
 
     # no Arctica here
     world = world[(world.name != "Antarctica") & (world.name != "Fr. S. Antarctic Lands")]
@@ -179,6 +185,11 @@ def decrease_marigins(fig):
 
 
 def set_mercurial_projection(areas):
+    # in case of bug
+    # "x, y, z, and time must be same size"
+    # downgrade shapely to version 1.8.4
+
+    # or update proj, pyproj, geos
     areas.to_crs("EPSG:3395", inplace=True)
 
 
