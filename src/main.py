@@ -1,9 +1,13 @@
+from os import chdir
+from pathlib import Path
+
 from data.df_preprocess_world import get_df_population_change
 from data.df_preprocess_ru import get_df_population_change_ru
 from data.df_process import merge_geo_tables, filter_geo_table
 from consts import *
 from plot_hist import plot_growth_hist
 from plot_map import plot_map
+
 
 from translations import fill_translations, loc_set, t
 
@@ -18,7 +22,15 @@ class Dataframes:
         self.filtered_summary = None
 
 
+def set_consistent_root_parth():
+    app_root_path = Path(__file__).parent.parent
+    chdir(app_root_path)
+    assert(Path.exists(app_root_path / 'data'))
+    print(f'Root path is set to {app_root_path}')
+
+
 def init_app():
+    set_consistent_root_parth()
     fill_translations()
     loc_set('locale', 'en')
 
